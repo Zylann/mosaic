@@ -18,10 +18,16 @@ func _ready():
 		{"name": "Saving", "weight": 2}
 	])
 	
+
+func _on_GenerateButton_pressed():
 	var mosaic_images_paths = get_images_in_folder("D:/PROJETS/IMAGE/mijto")
 	if len(mosaic_images_paths) == 0:
 		return
-	compute_mosaic("D:/PROJETS/IMAGE/kwaam2.png", mosaic_images_paths, "mosaic.png")
+	
+	var model_image_path = "D:/PROJETS/IMAGE/kwaam2.png"
+	var output_path = str(model_image_path.get_basename(), " mosaic.png")
+	
+	compute_mosaic(model_image_path, mosaic_images_paths, output_path)
 
 
 func get_images_in_folder(folder_path: String):
@@ -116,7 +122,7 @@ func compute_mosaic(model_image_path, mosaic_images_paths, output_path):
 	model_index.unlock()
 	model_image.unlock()
 	
-	model_index.save_png("model_index.png")
+	#model_index.save_png("model_index.png")
 	
 	# Load tile images
 	_progress_reporter.set_progress(0.5)
@@ -192,5 +198,3 @@ func compute_mosaic(model_image_path, mosaic_images_paths, output_path):
 	model_image.save_png(output_path)
 
 	_progress_reporter.finished()
-
-
