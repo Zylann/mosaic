@@ -1,36 +1,105 @@
 extends Panel
 
-const ProgressReporter = preload("progress_reporter.gd")
+const MosaicProcessor = preload("mosaic_processor.gd")
 
-const PROGRESS_STAGE_LOADING_MODEL = 0
-const PROGRESS_STAGE_LOADING_TILES = 1
-const PROGRESS_STAGE_COMPOSING = 2
-const PROGRESS_STAGE_SAVING = 3
+onready var _properties_container = get_node("VBoxContainer/HSplitContainer/Properties")
+onready var _ratios_control = _properties_container.get_node("GridContainer/TileRatio")
+onready var _main_image_control = _properties_container.get_node("MainImage")
+onready var _images_folder_control = _properties_container.get_node("ImagesFolder")
+onready var _tiles_x_control = _properties_container.get_node("GridContainer/HTiles")
+onready var _tile_ratio_control = _properties_container.get_node("GridContainer/TileRatio")
+onready var _upscale_control = _properties_container.get_node("GridContainer/UpscaleControl")
+onready var _output_path_control = _properties_container.get_node("OutputPath")
+onready var _generate_button = _properties_container.get_node("GenerateButton")
+onready var _show_output_button = _properties_container.get_node("ShowOutputButton")
 
-var _progress_reporter = ProgressReporter.new()
+onready var _image_dialog = get_node("ImageDialog")
+onready var _folder_dialog = get_node("FolderDialog")
+onready var _save_dialog = get_node("SaveDialog")
+
+var _mosaic_processor = MosaicProcessor.new()
+var _mosaic_images_paths = []
+
+var _ratios = [
+	[16, 9],
+	[4, 3],
+	[1, 1],
+	[3, 4]
+]
 
 
 func _ready():
-	_progress_reporter.configure([
-		{"name": "Loading model", "weight": 1},
-		{"name": "Loading tiles", "weight": 3},
-		{"name": "Composing", "weight": 8},
-		{"name": "Saving", "weight": 2}
-	])
-	
+	for i in len(_ratios):
+		var r = _ratios[i]
+		_ratios_control.add_item(str(r[0], ":", r[1]), i)
+	_update_generate_button()
+	_update_show_output_button()
+
+
+func _on_MainImageButton_pressed():
+	_image_dialog.popup_centered_ratio()
+
+
+func _on_ImagesFolderButton_pressed():
+	_folder_dialog.popup_centered_ratio()
+
+
+func _on_HTiles_value_changed(value):
+	pass
+
+
+func _on_UpscaleControl_value_changed(value):
+	pass
+
+
+func _on_OutputPathButton_pressed():
+	_save_dialog.popup_centered_ratio()
+
+
+func _on_ImageDialog_file_selected(path):
+	_main_image_control.text = path
+	_update_generate_button()
+
+
+func _on_FolderDialog_dir_selected(dir):
+	_mosaic_images_paths = get_images_in_folder(dir)
+	_images_folder_control.text = dir
+	_update_generate_button()
+
+
+func _on_SaveDialog_file_selected(path):
+	_output_path_control.text = path
+	_update_generate_button()
+	_update_show_output_button()
+
+
+func _update_generate_button():
+	_generate_button.disabled = \
+		_main_image_control.text == "" \
+		or len(_mosaic_images_paths) == 0 \
+		or _output_path_control.text == ""
+
+
+func _update_show_output_button():
+	_show_output_button.disabled = _output_path_control.text == ""
+
 
 func _on_GenerateButton_pressed():
-	var mosaic_images_paths = get_images_in_folder("D:/PROJETS/IMAGE/mijto")
-	if len(mosaic_images_paths) == 0:
-		return
-	
-	var model_image_path = "D:/PROJETS/IMAGE/kwaam2.png"
-	var output_path = str(model_image_path.get_basename(), " mosaic.png")
-	
-	compute_mosaic(model_image_path, mosaic_images_paths, output_path)
+	var model_image_path = _main_image_control.text.strip_edges()
+	var tiles_x = _tiles_x_control.value
+	var tile_ratio = _ratios[_tile_ratio_control.get_selected_id()]
+	var fratio = float(tile_ratio[0]) / float(tile_ratio[1])
+	var upscale = _upscale_control.value
+	var output_path = _output_path_control.text.strip_edges()
+	_mosaic_processor.compute_mosaic(model_image_path, _mosaic_images_paths, output_path, tiles_x, fratio, upscale)
 
 
-func get_images_in_folder(folder_path: String):
+func _on_ShowOutputButton_pressed():
+	var output_path = _output_path_control.text.strip_edges()
+	OS.shell_open(output_path)
+
+
+static func get_images_in_folder(folder_path: String):
 	var result := []
 	var d := Directory.new()
 	var err := d.open(folder_path)
@@ -46,155 +115,3 @@ func get_images_in_folder(folder_path: String):
 				result.append(folder_path.plus_file(fname))
 		fname = d.get_next()
 	return result
-
-
-class ColorDistanceTileSorter:
-	var tile_colors = null
-	var target_color = null
-	
-	func sort(a, b):
-		return color_distance(tile_colors[a], target_color) < color_distance(tile_colors[b], target_color)
-	
-	func color_distance(a, b):
-		return sqrt(sq(a.r - b.r) + sq(a.g - b.g) + sq(a.b - b.b))
-
-	func sq(x):
-		return x * x
-
-
-func compute_mosaic(model_image_path, mosaic_images_paths, output_path):
-	
-	# I'm cheating a little here, but it works well for my needs :)
-	
-	# Load model image
-	_progress_reporter.set_stage(PROGRESS_STAGE_LOADING_MODEL)
-	var model_image = Image.new()
-	if true:
-		var err = model_image.load(model_image_path)
-		if err != OK:
-			printerr("Could not load image ", model_image_path, ", error ", err)
-			return
-	
-	# Scale it up optionally
-	_progress_reporter.set_progress(0.2)
-	var scale_factor = 32
-	model_image.resize(model_image.get_width() * scale_factor, model_image.get_height() * scale_factor, Image.INTERPOLATE_NEAREST)
-	
-	var model_width = model_image.get_width()
-	var model_height = model_image.get_height()
-	var model_ratio = float(model_width) / float(model_height)
-	
-	# Calculate tile sizes
-	var tile_ratio = 3.0 / 4.0
-	var tiles_x = 30
-	var tile_width = float(model_width / tiles_x)
-	var tile_height = tile_width / tile_ratio
-	tile_width = int(tile_width)
-	tile_height = int(tile_height)
-	var tiles_y = model_height / tile_height
-	
-	# Resize result a little to fit tiles perfectly
-	_progress_reporter.set_progress(0.5)
-	model_image.resize(tiles_x * tile_width, tiles_y * tile_height, Image.INTERPOLATE_CUBIC)
-	var model_index = Image.new()
-	
-	# Build model color index
-	_progress_reporter.set_stage(PROGRESS_STAGE_LOADING_TILES)
-	model_index.create(tiles_x, tiles_y, false, Image.FORMAT_RGB8)
-	
-	model_image.lock()
-	model_index.lock()
-	
-	var tile_area = tile_width * tile_height
-	for ty in model_index.get_height():
-		for tx in model_index.get_width():
-			
-			var px0 = tx * tile_width
-			var py0 = ty * tile_height
-			var sum = Color(0,0,0)
-			
-			for py in range(py0, py0 + tile_height):
-				for px in range(px0, px0 + tile_width):
-					sum += model_image.get_pixel(px, py)
-					
-			model_index.set_pixel(tx, ty, sum / tile_area)
-	
-	model_index.unlock()
-	model_image.unlock()
-	
-	#model_index.save_png("model_index.png")
-	
-	# Load tile images
-	_progress_reporter.set_progress(0.5)
-	var tile_images = []
-	var tile_color = []
-	for path in mosaic_images_paths:
-		
-		var im = Image.new()
-		var err = im.load(path)
-		if err != OK:
-			printerr("Could not load image ", path, ", error ", err)
-			continue
-		im.resize(tile_width, tile_height, Image.INTERPOLATE_CUBIC)
-		tile_images.append(im)
-		
-		im.lock()
-		var sum = Color()
-		for y in im.get_height():
-			for x in im.get_width():
-				sum += im.get_pixel(x, y)
-		tile_color.append(sum / tile_area)
-		im.unlock()
-	
-	# Paste tiles
-	_progress_reporter.set_stage(PROGRESS_STAGE_COMPOSING)
-	model_image.lock()
-	model_index.lock()
-	
-	var extra_lerps = [0.2, 0.3, 0.4, 0.5]
-	
-	for ty in model_index.get_height():
-		_progress_reporter.set_progress(float(ty) / float(model_index.get_height()))
-		
-		for tx in model_index.get_width():
-			
-			var m = model_index.get_pixel(tx, ty)
-			var px0 = tx * tile_width
-			var py0 = ty * tile_height
-			
-			var tile_image = null
-			var sorter = ColorDistanceTileSorter.new()
-			sorter.tile_colors = tile_color
-			sorter.target_color = m
-			var tiles_order = []
-			tiles_order.resize(len(tile_color))
-			for i in len(tiles_order):
-				tiles_order[i] = i
-			tiles_order.sort_custom(sorter, "sort")
-			
-			var ri = randi() % len(extra_lerps)
-			if ri >= len(tiles_order):
-				ri = len(tiles_order) - 1
-			var extra_lerp = extra_lerps[ri]
-			tile_image = tile_images[tiles_order[ri]]
-			#var tile_image = tile_images[randi() % len(tile_images)]
-			
-			tile_image.lock()
-			
-			for py in tile_height:
-				for px in tile_width:
-					
-					var c = tile_image.get_pixel(px, py)
-					c = c.linear_interpolate(m, extra_lerp)
-					model_image.set_pixel(px0 + px, py0 + py, c)
-			
-			tile_image.unlock()
-	
-	model_index.unlock()
-	model_image.unlock()
-	
-	# Save
-	_progress_reporter.set_stage(PROGRESS_STAGE_SAVING)
-	model_image.save_png(output_path)
-
-	_progress_reporter.finished()

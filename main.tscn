@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://main.gd" type="Script" id=1]
+[ext_resource path="res://icon.png" type="Texture" id=2]
 
 [node name="Control" type="Panel"]
 anchor_left = 0.0
@@ -54,7 +55,7 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 278.0
+margin_right = 200.0
 margin_bottom = 550.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -64,32 +65,38 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 alignment = 0
 
-[node name="MainImageLabel" type="Label" parent="VBoxContainer/HSplitContainer/Properties"]
+[node name="MainImage" type="LineEdit" parent="VBoxContainer/HSplitContainer/Properties"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 278.0
-margin_bottom = 14.0
+margin_right = 200.0
+margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 1
 size_flags_horizontal = 1
-size_flags_vertical = 4
-text = "No main image"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
+size_flags_vertical = 1
+editable = false
+secret_character = "*"
+focus_mode = 2
+context_menu_enabled = true
+clear_button_enabled = false
+placeholder_alpha = 0.6
+caret_blink = false
+caret_blink_speed = 0.65
+caret_position = 0
 
 [node name="MainImageButton" type="Button" parent="VBoxContainer/HSplitContainer/Properties"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 18.0
-margin_right = 278.0
-margin_bottom = 38.0
+margin_top = 28.0
+margin_right = 200.0
+margin_bottom = 48.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -105,33 +112,39 @@ text = "Load main image..."
 flat = false
 align = 1
 
-[node name="ImagesFolderLabel" type="Label" parent="VBoxContainer/HSplitContainer/Properties"]
+[node name="ImagesFolder" type="LineEdit" parent="VBoxContainer/HSplitContainer/Properties"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 42.0
-margin_right = 278.0
-margin_bottom = 56.0
+margin_top = 52.0
+margin_right = 200.0
+margin_bottom = 76.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 1
 size_flags_horizontal = 1
-size_flags_vertical = 4
-text = "No images folder"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
+size_flags_vertical = 1
+editable = false
+secret_character = "*"
+focus_mode = 2
+context_menu_enabled = true
+clear_button_enabled = false
+placeholder_alpha = 0.6
+caret_blink = false
+caret_blink_speed = 0.65
+caret_position = 0
 
 [node name="ImagesFolderButton" type="Button" parent="VBoxContainer/HSplitContainer/Properties"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 60.0
-margin_right = 278.0
-margin_bottom = 80.0
+margin_top = 80.0
+margin_right = 200.0
+margin_bottom = 100.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -152,9 +165,9 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 84.0
-margin_right = 278.0
-margin_bottom = 164.0
+margin_top = 104.0
+margin_right = 200.0
+margin_bottom = 180.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -188,7 +201,7 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 126.0
-margin_right = 278.0
+margin_right = 200.0
 margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
@@ -200,7 +213,7 @@ min_value = 1.0
 max_value = 100.0
 step = 1.0
 page = 0.0
-value = 1.0
+value = 20.0
 exp_edit = false
 rounded = false
 allow_greater = false
@@ -214,9 +227,9 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 33.0
+margin_top = 31.0
 margin_right = 122.0
-margin_bottom = 47.0
+margin_bottom = 45.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -228,84 +241,40 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/Properties/GridContainer"]
+[node name="TileRatio" type="OptionButton" parent="VBoxContainer/HSplitContainer/Properties/GridContainer"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 126.0
 margin_top = 28.0
-margin_right = 278.0
-margin_bottom = 52.0
+margin_right = 200.0
+margin_bottom = 48.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-alignment = 0
-
-[node name="AspectX" type="SpinBox" parent="VBoxContainer/HSplitContainer/Properties/GridContainer/HBoxContainer"]
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 74.0
-margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
+focus_mode = 2
 mouse_filter = 0
 mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
+size_flags_horizontal = 1
 size_flags_vertical = 1
-min_value = 1.0
-max_value = 100.0
-step = 1.0
-page = 0.0
-value = 1.0
-exp_edit = false
-rounded = false
-allow_greater = false
-allow_lesser = false
-editable = true
-prefix = ""
-suffix = ""
-
-[node name="AspectY" type="SpinBox" parent="VBoxContainer/HSplitContainer/Properties/GridContainer/HBoxContainer"]
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 78.0
-margin_right = 152.0
-margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 3
-size_flags_vertical = 1
-min_value = 1.0
-max_value = 100.0
-step = 1.0
-page = 0.0
-value = 1.0
-exp_edit = false
-rounded = false
-allow_greater = false
-allow_lesser = false
-editable = true
-prefix = ""
-suffix = ""
+toggle_mode = false
+action_mode = 0
+enabled_focus_mode = 2
+shortcut = null
+group = null
+flat = false
+align = 0
+items = [  ]
+selected = -1
 
 [node name="UpscaleLabel" type="Label" parent="VBoxContainer/HSplitContainer/Properties/GridContainer"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 61.0
+margin_top = 57.0
 margin_right = 122.0
-margin_bottom = 75.0
+margin_bottom = 71.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -323,9 +292,9 @@ anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 126.0
-margin_top = 56.0
-margin_right = 278.0
-margin_bottom = 80.0
+margin_top = 52.0
+margin_right = 200.0
+margin_bottom = 76.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -350,9 +319,9 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 168.0
-margin_right = 278.0
-margin_bottom = 526.0
+margin_top = 184.0
+margin_right = 200.0
+margin_bottom = 420.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -360,14 +329,63 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 3
 
+[node name="OutputPath" type="LineEdit" parent="VBoxContainer/HSplitContainer/Properties"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 424.0
+margin_right = 200.0
+margin_bottom = 448.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 1
+size_flags_horizontal = 1
+size_flags_vertical = 1
+editable = false
+secret_character = "*"
+focus_mode = 2
+context_menu_enabled = true
+clear_button_enabled = false
+placeholder_alpha = 0.6
+caret_blink = false
+caret_blink_speed = 0.65
+caret_position = 0
+
+[node name="OutputPathButton" type="Button" parent="VBoxContainer/HSplitContainer/Properties"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 452.0
+margin_right = 200.0
+margin_bottom = 472.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "Select output folder..."
+flat = false
+align = 1
+
 [node name="GenerateButton" type="Button" parent="VBoxContainer/HSplitContainer/Properties"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 530.0
-margin_right = 278.0
-margin_bottom = 550.0
+margin_top = 476.0
+margin_right = 200.0
+margin_bottom = 526.0
+rect_min_size = Vector2( 0, 50 )
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -383,21 +401,82 @@ text = "Generate mosaic"
 flat = false
 align = 1
 
+[node name="ShowOutputButton" type="Button" parent="VBoxContainer/HSplitContainer/Properties"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 530.0
+margin_right = 200.0
+margin_bottom = 550.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "ShowOutputFolder"
+flat = false
+align = 1
+
 [node name="Preview" type="ColorRect" parent="VBoxContainer/HSplitContainer"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 290.0
+margin_left = 212.0
 margin_right = 992.0
 margin_bottom = 550.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+color = Color( 0.054902, 0.054902, 0.054902, 1 )
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/HSplitContainer/Preview"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 16.0
+margin_top = 16.0
+margin_right = -16.0
+margin_bottom = -16.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-color = Color( 0.054902, 0.054902, 0.054902, 1 )
+use_top_left = false
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HSplitContainer/Preview/CenterContainer"]
+modulate = Color( 0.309804, 0.309804, 0.309804, 1 )
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 274.0
+margin_top = 159.0
+margin_right = 474.0
+margin_bottom = 359.0
+rect_min_size = Vector2( 200, 200 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 0
 
 [node name="ProgressBar" type="ProgressBar" parent="VBoxContainer"]
 anchor_left = 0.0
@@ -424,4 +503,97 @@ allow_greater = false
 allow_lesser = false
 percent_visible = true
 
+[node name="ImageDialog" type="FileDialog" parent="."]
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 275.0
+margin_bottom = 130.0
+rect_min_size = Vector2( 200, 70 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+popup_exclusive = false
+window_title = "Open a File"
+resizable = true
+dialog_hide_on_ok = false
+mode_overrides_title = true
+mode = 0
+access = 2
+filters = PoolStringArray( "*.png ; PNG images", "*.jpg ; JPG images" )
+show_hidden_files = false
+current_dir = "D:/PROJETS/INFO/GODOT/Plugins/ImageMosaic"
+current_file = ""
+current_path = "D:/PROJETS/INFO/GODOT/Plugins/ImageMosaic/"
+
+[node name="FolderDialog" type="FileDialog" parent="."]
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 275.0
+margin_bottom = 130.0
+rect_min_size = Vector2( 200, 70 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+popup_exclusive = false
+window_title = "Open a Directory"
+resizable = true
+dialog_hide_on_ok = false
+mode_overrides_title = true
+mode = 2
+access = 2
+filters = PoolStringArray(  )
+show_hidden_files = false
+current_dir = "D:/PROJETS/INFO/GODOT/Plugins/ImageMosaic"
+current_file = ""
+current_path = "D:/PROJETS/INFO/GODOT/Plugins/ImageMosaic/"
+
+[node name="SaveDialog" type="FileDialog" parent="."]
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 275.0
+margin_bottom = 130.0
+rect_min_size = Vector2( 200, 70 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+popup_exclusive = false
+window_title = "Save a File"
+resizable = true
+dialog_hide_on_ok = false
+mode_overrides_title = true
+mode = 4
+access = 2
+filters = PoolStringArray(  )
+show_hidden_files = false
+current_dir = "D:/PROJETS/INFO/GODOT/Plugins/ImageMosaic"
+current_file = "Mosaic.png"
+current_path = "D:/PROJETS/INFO/GODOT/Plugins/ImageMosaic/Mosaic.png"
+
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/Properties/MainImageButton" to="." method="_on_MainImageButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/Properties/ImagesFolderButton" to="." method="_on_ImagesFolderButton_pressed"]
+[connection signal="value_changed" from="VBoxContainer/HSplitContainer/Properties/GridContainer/HTiles" to="." method="_on_HTiles_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/HSplitContainer/Properties/GridContainer/UpscaleControl" to="." method="_on_UpscaleControl_value_changed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/Properties/OutputPathButton" to="." method="_on_OutputPathButton_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/Properties/GenerateButton" to="." method="_on_GenerateButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/Properties/ShowOutputButton" to="." method="_on_ShowOutputButton_pressed"]
+[connection signal="file_selected" from="ImageDialog" to="." method="_on_ImageDialog_file_selected"]
+[connection signal="dir_selected" from="FolderDialog" to="." method="_on_FolderDialog_dir_selected"]
+[connection signal="file_selected" from="SaveDialog" to="." method="_on_SaveDialog_file_selected"]
