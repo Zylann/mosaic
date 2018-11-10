@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://main.gd" type="Script" id=1]
-[ext_resource path="res://icon.png" type="Texture" id=2]
+[ext_resource path="res://ratio_container.gd" type="Script" id=2]
+[ext_resource path="res://icon.png" type="Texture" id=3]
 
 [node name="Control" type="Panel"]
 anchor_left = 0.0
@@ -490,7 +491,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 color = Color( 0.054902, 0.054902, 0.054902, 1 )
 
-[node name="CenterContainer" type="Control" parent="VBoxContainer/HSplitContainer/Preview"]
+[node name="CenterContainer" type="Container" parent="VBoxContainer/HSplitContainer/Preview"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
@@ -505,6 +506,7 @@ mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
+script = ExtResource( 2 )
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HSplitContainer/Preview/CenterContainer"]
 self_modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
@@ -523,7 +525,7 @@ mouse_filter = 1
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-texture = ExtResource( 2 )
+texture = ExtResource( 3 )
 expand = true
 stretch_mode = 0
 

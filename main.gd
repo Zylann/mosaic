@@ -41,13 +41,6 @@ func _ready():
 	_update_show_output_button()
 	_update_preview()
 	_preview_overlay.connect("draw", self, "_on_PreviewOverlay_draw")
-	connect("resized", self, "_on_Main_resized")
-
-
-func _on_Main_resized():
-	# Have to wait one frame because apparently controls layout didn't run yet
-	yield(get_tree(), "idle_frame")
-	_update_preview()
 
 
 func _on_MainImageButton_pressed():
@@ -126,20 +119,7 @@ func _update_preview():
 	
 	var container_size = _preview_texture.get_parent().rect_size
 	var main_ratio = float(sizes.main_width) / float(sizes.main_height)
-	var preview_size = Vector2()
-	if sizes.main_width > sizes.main_height:
-		preview_size = Vector2(container_size.x, container_size.x / main_ratio)
-	else:
-		preview_size = Vector2(container_size.y * main_ratio, container_size.y)
-	
-	if preview_size.x > container_size.x:
-		preview_size *= container_size.x / preview_size.x
-	elif preview_size.y > container_size.y:
-		preview_size *= container_size.y / preview_size.y
-	
-	_preview_texture.rect_size = preview_size
-	_preview_texture.rect_position = (_preview_texture.get_parent().rect_size - _preview_texture.rect_size) / 2
-	
+	_preview_texture.get_parent().set_ratio(main_ratio)
 	_preview_overlay.update()
 
 
