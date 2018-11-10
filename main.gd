@@ -76,6 +76,9 @@ func _on_ImageDialog_file_selected(path):
 	var im = Image.new()
 	if im.load(path) == OK:
 		_main_image_size_cache = im.get_size()
+		var tex = ImageTexture.new()
+		tex.create_from_image(im, Texture.FLAG_FILTER)
+		_preview_texture.texture = tex
 	_update_preview()
 
 
@@ -168,7 +171,6 @@ func _on_GenerateButton_pressed():
 
 
 func _compute_mosaic_thread_func(params):
-	print("Running the thing")
 	_mosaic_processor.compute_mosaic( \
 		params.model_image_path, \
 		params.mosaic_images_paths, \
@@ -177,7 +179,6 @@ func _compute_mosaic_thread_func(params):
 		params.tile_ratio, \
 		params.upscale, \
 		params.randomness)
-	print("Finished the thing")
 	call_deferred("_thread_finished")
 
 
