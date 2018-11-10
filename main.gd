@@ -9,6 +9,7 @@ onready var _images_folder_control = _properties_container.get_node("ImagesFolde
 onready var _tiles_x_control = _properties_container.get_node("GridContainer/HTiles")
 onready var _tile_ratio_control = _properties_container.get_node("GridContainer/TileRatio")
 onready var _upscale_control = _properties_container.get_node("GridContainer/UpscaleControl")
+onready var _randomness_control = _properties_container.get_node("GridContainer/RandomnessControl")
 onready var _output_path_control = _properties_container.get_node("OutputPath")
 onready var _generate_button = _properties_container.get_node("GenerateButton")
 onready var _show_output_button = _properties_container.get_node("ShowOutputButton")
@@ -85,13 +86,23 @@ func _update_show_output_button():
 
 
 func _on_GenerateButton_pressed():
+	
 	var model_image_path = _main_image_control.text.strip_edges()
 	var tiles_x = _tiles_x_control.value
 	var tile_ratio = _ratios[_tile_ratio_control.get_selected_id()]
 	var fratio = float(tile_ratio[0]) / float(tile_ratio[1])
 	var upscale = _upscale_control.value
 	var output_path = _output_path_control.text.strip_edges()
-	_mosaic_processor.compute_mosaic(model_image_path, _mosaic_images_paths, output_path, tiles_x, fratio, upscale)
+	var randomness = _randomness_control.value
+	
+	_mosaic_processor.compute_mosaic( \
+		model_image_path, \
+		_mosaic_images_paths, \
+		output_path, \
+		tiles_x, \
+		fratio, \
+		upscale, \
+		randomness)
 
 
 func _on_ShowOutputButton_pressed():

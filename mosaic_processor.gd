@@ -31,7 +31,7 @@ func _init():
 	])
 
 
-func compute_mosaic(model_image_path, mosaic_images_paths, output_path, tiles_x, tile_ratio, scale_factor):
+func compute_mosaic(model_image_path, mosaic_images_paths, output_path, tiles_x, tile_ratio, scale_factor, randomness):
 	
 	# I'm cheating a little here, but it works well for my needs :)
 	
@@ -120,7 +120,13 @@ func compute_mosaic(model_image_path, mosaic_images_paths, output_path, tiles_x,
 	model_image.lock()
 	model_index.lock()
 	
-	var extra_lerps = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+	# Instead of picking the fittest image, randomly pick a nearby less fit one,
+	# to create more randomness at the cost of shape quality.
+	# The more randomness, the further unfit images can be picked.
+	var extra_lerps = []
+	var extra_lerp_count = int(randomness * (len(tile_images) - 1)) + 1
+	for i in extra_lerp_count:
+		extra_lerps.append(lerp(0.1, 0.5, float(i)/float(extra_lerp_count)))
 	
 	for ty in model_index.get_height():
 		_progress_reporter.set_progress(float(ty) / float(model_index.get_height()))
