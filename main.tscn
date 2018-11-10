@@ -305,7 +305,7 @@ min_value = 1.0
 max_value = 32.0
 step = 1.0
 page = 0.0
-value = 1.0
+value = 2.0
 exp_edit = false
 rounded = false
 allow_greater = false
@@ -470,7 +470,7 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-text = "ShowOutputFolder"
+text = "Show output"
 flat = false
 align = 1
 
@@ -490,7 +490,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 color = Color( 0.054902, 0.054902, 0.054902, 1 )
 
-[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/HSplitContainer/Preview"]
+[node name="CenterContainer" type="Control" parent="VBoxContainer/HSplitContainer/Preview"]
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 1.0
@@ -505,10 +505,9 @@ mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-use_top_left = false
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/HSplitContainer/Preview/CenterContainer"]
-modulate = Color( 0.309804, 0.309804, 0.309804, 1 )
+self_modulate = Color( 0.501961, 0.501961, 0.501961, 1 )
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -527,6 +526,18 @@ size_flags_vertical = 1
 texture = ExtResource( 2 )
 expand = true
 stretch_mode = 0
+
+[node name="Overlay" type="Control" parent="VBoxContainer/HSplitContainer/Preview/CenterContainer/TextureRect"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
 
 [node name="ProgressBar" type="ProgressBar" parent="VBoxContainer"]
 anchor_left = 0.0
@@ -640,6 +651,7 @@ current_path = "D:/PROJETS/INFO/GODOT/Plugins/ImageMosaic/Mosaic.png"
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/Properties/MainImageButton" to="." method="_on_MainImageButton_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/Properties/ImagesFolderButton" to="." method="_on_ImagesFolderButton_pressed"]
 [connection signal="value_changed" from="VBoxContainer/HSplitContainer/Properties/GridContainer/HTiles" to="." method="_on_HTiles_value_changed"]
+[connection signal="item_selected" from="VBoxContainer/HSplitContainer/Properties/GridContainer/TileRatio" to="." method="_on_TileRatio_item_selected"]
 [connection signal="value_changed" from="VBoxContainer/HSplitContainer/Properties/GridContainer/UpscaleControl" to="." method="_on_UpscaleControl_value_changed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/Properties/OutputPathButton" to="." method="_on_OutputPathButton_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/Properties/GenerateButton" to="." method="_on_GenerateButton_pressed"]

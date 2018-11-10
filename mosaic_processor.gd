@@ -9,6 +9,7 @@ class ColorDistanceTileSorter:
 		return color_distance(tile_colors[a], target_color) < color_distance(tile_colors[b], target_color)
 	
 	func color_distance(a, b):
+		# TODO Probably incorrect, can be improved
 		return sqrt(sq(a.r - b.r) + sq(a.g - b.g) + sq(a.b - b.b))
 
 	func sq(x):
@@ -31,7 +32,37 @@ func _init():
 	])
 
 
-func compute_mosaic(model_image_path, mosaic_images_paths, output_path, tiles_x, tile_ratio, scale_factor, randomness):
+func get_adjusted_sizes(model_width, model_height, tiles_x, tile_ratio, scale_factor):
+	# Scale it up optionally
+	model_width = int(model_width * scale_factor)
+	model_height = int(model_height * scale_factor)
+		
+	# Calculate tile sizes
+	var tile_width = float(model_width / tiles_x)
+	var tile_height = tile_width / tile_ratio
+	tile_width = int(tile_width)
+	tile_height = int(tile_height)
+	if tile_width == 0 or tile_height == 0:
+		printerr("Tile size would be too small, aborting")
+		return null
+	var tiles_y = model_height / tile_height
+	
+	# Resize result a little to fit tiles perfectly
+	var main_width = tiles_x * tile_width
+	var main_height = tiles_y * tile_height
+	
+	return {
+		"main_width": main_width,
+		"main_height": main_height,
+		"tile_width": tile_width,
+		"tile_height": tile_height,
+		"tiles_x": tiles_x,
+		"tiles_y": tiles_y
+	}
+
+
+func compute_mosaic(model_image_path, mosaic_images_paths, output_path, tiles_x,\
+	 tile_ratio, scale_factor, randomness):
 	
 	# I'm cheating a little here, but it works well for my needs :)
 	
@@ -44,31 +75,21 @@ func compute_mosaic(model_image_path, mosaic_images_paths, output_path, tiles_x,
 			printerr("Could not load image ", model_image_path, ", error ", err)
 			return
 	
-	# Scale it up optionally
-	_progress_reporter.set_progress(0.2)
-	model_image.resize( \
-		model_image.get_width() * scale_factor, \
-		model_image.get_height() * scale_factor, \
-		Image.INTERPOLATE_NEAREST)
-	
-	var model_width = model_image.get_width()
-	var model_height = model_image.get_height()
-	var model_ratio = float(model_width) / float(model_height)
-	
-	# Calculate tile sizes
-	var tile_width = float(model_width / tiles_x)
-	var tile_height = tile_width / tile_ratio
-	tile_width = int(tile_width)
-	tile_height = int(tile_height)
-	var tiles_y = model_height / tile_height
+	var sizes = get_adjusted_sizes( \
+		model_image.get_width(), model_image.get_height(), tiles_x, tile_ratio, scale_factor)
+	if sizes == null:
+		return
+	var tiles_y = sizes.tiles_y
+	var tile_width = sizes.tile_width
+	var tile_height = sizes.tile_height
 	
 	# Resize result a little to fit tiles perfectly
 	_progress_reporter.set_progress(0.5)
-	model_image.resize(tiles_x * tile_width, tiles_y * tile_height, Image.INTERPOLATE_CUBIC)
-	var model_index = Image.new()
+	model_image.resize(sizes.main_width, sizes.main_height, Image.INTERPOLATE_CUBIC)
 	
 	# Build model color index
 	_progress_reporter.set_stage(PROGRESS_STAGE_LOADING_TILES)
+	var model_index = Image.new()
 	model_index.create(tiles_x, tiles_y, false, Image.FORMAT_RGB8)
 	
 	model_image.lock()
