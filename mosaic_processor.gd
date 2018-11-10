@@ -32,6 +32,10 @@ func _init():
 	])
 
 
+func get_progress_reporter():
+	return _progress_reporter
+
+
 func get_adjusted_sizes(model_width, model_height, tiles_x, tile_ratio, scale_factor):
 	# Scale it up optionally
 	model_width = int(model_width * scale_factor)

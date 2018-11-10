@@ -15,6 +15,7 @@ onready var _generate_button = _properties_container.get_node("GenerateButton")
 onready var _show_output_button = _properties_container.get_node("ShowOutputButton")
 onready var _preview_texture = get_node("VBoxContainer/HSplitContainer/Preview/CenterContainer/TextureRect")
 onready var _preview_overlay = _preview_texture.get_node("Overlay")
+onready var _progress_bar = get_node("VBoxContainer/ProgressBar")
 
 onready var _image_dialog = get_node("ImageDialog")
 onready var _folder_dialog = get_node("FolderDialog")
@@ -24,6 +25,7 @@ var _mosaic_processor = MosaicProcessor.new()
 var _mosaic_images_paths = []
 var _main_image_size_cache = Vector2()
 var _adjusted_sizes_cache = null
+var _thread = null
 
 var _ratios = [
 	[16, 9],
@@ -41,6 +43,7 @@ func _ready():
 	_update_show_output_button()
 	_update_preview()
 	_preview_overlay.connect("draw", self, "_on_PreviewOverlay_draw")
+	_mosaic_processor.get_progress_reporter().connect("progress_reported", self, "_on_MosaicProcessor_progress_reported")
 
 
 func _on_MainImageButton_pressed():
@@ -146,22 +149,47 @@ func get_selected_ratio():
 
 func _on_GenerateButton_pressed():
 	
-	var model_image_path = _main_image_control.text.strip_edges()
-	var tiles_x = _tiles_x_control.value
-	var tile_ratio = get_selected_ratio()
-	var upscale = _upscale_control.value
-	var output_path = _output_path_control.text.strip_edges()
-	var randomness = _randomness_control.value
+	if _thread != null and _thread.is_active():
+		print("Thread already running")
+		return
 	
-	_mosaic_processor.compute_mosaic( \
-		model_image_path, \
-		_mosaic_images_paths, \
-		output_path, \
-		tiles_x, \
-		tile_ratio, \
-		upscale, \
-		randomness)
+	var params = {
+		model_image_path = _main_image_control.text.strip_edges(),
+		mosaic_images_paths = _mosaic_images_paths,
+		tiles_x = _tiles_x_control.value,
+		tile_ratio = get_selected_ratio(),
+		upscale = _upscale_control.value,
+		output_path = _output_path_control.text.strip_edges(),
+		randomness = _randomness_control.value
+	}
+	
+	_thread = Thread.new()
+	_thread.start(self, "_compute_mosaic_thread_func", params)
 
+
+func _compute_mosaic_thread_func(params):
+	print("Running the thing")
+	_mosaic_processor.compute_mosaic( \
+		params.model_image_path, \
+		params.mosaic_images_paths, \
+		params.output_path, \
+		params.tiles_x, \
+		params.tile_ratio, \
+		params.upscale, \
+		params.randomness)
+	print("Finished the thing")
+	call_deferred("_thread_finished")
+
+
+# Had to do this extra bit, because `Thread.is_active()` reports true
+# even when the function has finished executing...
+func _thread_finished():
+	_thread.wait_to_finish()
+
+
+func _on_MosaicProcessor_progress_reported(percent, text):
+	_progress_bar.value = percent
+	
 
 func _on_ShowOutputButton_pressed():
 	var output_path = _output_path_control.text.strip_edges()

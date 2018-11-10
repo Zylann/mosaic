@@ -1,4 +1,9 @@
 
+# Helper to report progress for long-running operations.
+# Note: this object is not thread-safe, except for the `progress_reported` signal.
+
+signal progress_reported(percent, text, finished)
+
 var _progress_config = []
 var _current_stage = 0
 
@@ -16,8 +21,14 @@ func set_progress(stage_progress):
 
 
 func _report(p, text):
+	#print("Thread progress: ", p, ", ", text)
+	call_deferred("_main_thread_report", p, text)
+
+
+func _main_thread_report(p, text):
 	var pc = int(100.0 * p)
 	print("[", str(pc).pad_zeros(2), "%] ", text)
+	emit_signal("progress_reported", pc, text)
 
 
 func finished():
