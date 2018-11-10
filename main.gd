@@ -126,6 +126,7 @@ func _update_preview():
 	var container_size = _preview_texture.get_parent().rect_size
 	var main_ratio = float(sizes.main_width) / float(sizes.main_height)
 	_preview_texture.get_parent().set_ratio(main_ratio)
+	_preview_texture.get_parent().layout()
 	_preview_overlay.update()
 
 
